@@ -1,0 +1,3 @@
+echo "after common_test hook is working!"
+echo "this is where we should clean existing Riak releases and leave the"
+echo "current working directory clean."
