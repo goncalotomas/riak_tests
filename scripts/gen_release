@@ -1,0 +1,39 @@
+echo "===> Running post_compile hook for generating Riak release"
+CWD=$(pwd)
+OLD_DEPS_DIR=$REBAR_DEPS_DIR
+OLD_BUILD_DIR=$REBAR_BUILD_DIR
+echo "REBAR_PROFILE = $REBAR_PROFILE"
+echo "REBAR_DEPS_DIR = $REBAR_DEPS_DIR"
+echo "REBAR_BUILD_DIR = $REBAR_BUILD_DIR"
+echo "REBAR_ROOT_DIR = $REBAR_ROOT_DIR"
+echo "REBAR_CHECKOUTS_DIR = $REBAR_CHECKOUTS_DIR"
+echo "REBAR_PLUGINS_DIR = $REBAR_PLUGINS_DIR"
+echo "REBAR_GLOBAL_CONFIG_DIR = $REBAR_GLOBAL_CONFIG_DIR"
+echo "REBAR_GLOBAL_CACHE_DIR = $REBAR_GLOBAL_CACHE_DIR"
+echo "REBAR_TEMPLATE_DIR = $REBAR_TEMPLATE_DIR"
+echo "REBAR_APP_DIRS = $REBAR_APP_DIRS"
+echo "REBAR_SRC_DIRS = $REBAR_SRC_DIRS"
+echo "ERLANG_ERTS_VER = $ERLANG_ERTS_VER"
+echo "ERLANG_ROOT_DIR = $ERLANG_ROOT_DIR"
+echo "ERL = $ERL"
+echo "ERLC = $ERLC"
+echo "ERLANG_ARCH = $ERLANG_ARCH"
+echo "ERLANG_TARGET = $ERLANG_TARGET"
+echo "===> Changing directory into Riak dependency..."
+cd $REBAR_DEPS_DIR/riak
+echo "===> Working from $(pwd)..."
+echo "===> Set REBAR_DEPS_DIR to $(pwd)/deps"
+echo "===> Set REBAR_BUILD_DIR to $(pwd)/rel"
+REBAR_DEPS_DIR=$(pwd)/deps
+REBAR_BUILD_DIR=$(pwd)/rel
+echo "===> Getting Riak dependencies..."
+./rebar get-deps
+echo "===> Compiling Riak dependencies..."
+./rebar compile
+echo "===> Generating manual Riak release..."
+./rebar generate
+echo "===> Done generating release, moving back to previous directory"
+cd $CWD
+echo "===> Success"
+REBAR_DEPS_DIR=$OLD_DEPS_DIR
+REBAR_BUILD_DIR=$OLD_BUILD_DIR

@@ -1,3 +1,3 @@
-echo "before common_test hook is working!"
-echo "this is where we should generate a Riak release and copy it to support"
-echo "multiple riak nodes in tests."
+echo "===> Running pre_ct hook"
+echo "Here I am supposed to copy the Riak release artifacts to a folder that is accessible from within CT suites"
+echo "Also delete and create (to allow multiple executions) data directories for Riak nodes within the CT suites"
