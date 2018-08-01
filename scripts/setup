@@ -1,3 +1,2 @@
 echo "===> Running pre_ct hook"
-echo "Here I am supposed to copy the Riak release artifacts to a folder that is accessible from within CT suites"
-echo "Also delete and create (to allow multiple executions) data directories for Riak nodes within the CT suites"
+# echo "This script is going to fill in the rt_dev config like verify_build_cluster_SUITE:28-33"
