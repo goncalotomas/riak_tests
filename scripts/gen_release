@@ -1,4 +1,13 @@
 echo "===> Running post_compile hook for generating Riak release"
+# TODO check if target files are already there and only generate release if there the files are NOT there
+# TARGET_DIR="priv/bin/$REBAR_PROFILE"
+# if [ -d "priv/bin/$REBAR_PROFILE" ]; then
+#   # Control will enter here if $DIRECTORY exists.
+#   echo "Release artefact directory already exists. Checking for binaries"
+#   if [ ! -f "$TARGET_DIR/" ]; then
+#     echo "File not found!"
+#   fi
+# fi
 CWD=$(pwd)
 OLD_DEPS_DIR=$REBAR_DEPS_DIR
 OLD_BUILD_DIR=$REBAR_BUILD_DIR
@@ -26,12 +35,8 @@ echo "Post compile hook: Set REBAR_DEPS_DIR to $(pwd)/deps"
 echo "Post compile hook: Set REBAR_BUILD_DIR to $(pwd)/rel"
 REBAR_DEPS_DIR=$(pwd)/deps
 REBAR_BUILD_DIR=$(pwd)/rel
-echo "Post compile hook: Getting Riak dependencies..."
-./rebar get-deps
-echo "Post compile hook: Compiling Riak dependencies..."
-./rebar compile
 echo "Post compile hook: Generating manual Riak release..."
-./rebar generate
+make all devrel
 if [ $? -eq 0 ]; then
     echo "Post compile hook: Done generating release."
     cd $CWD
