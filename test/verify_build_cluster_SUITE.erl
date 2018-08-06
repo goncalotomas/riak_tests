@@ -28,16 +28,9 @@ init_per_suite(Config) ->
     %% TODO remove hardcoded paths
     %% TODO ensure that rt_config is able to read configuration below
     ListParams = [
-        {giddyup_host, "localhost:5000"},
-        {giddyup_user, "user"},
-        {giddyup_password, "password"},
         {rt_max_wait_time, 600000},
         {rt_retry_delay, 1000},
-        {rt_harness, rtdev},
-        {rt_scratch_dir, "/tmp/riak_test_scratch"},
-        {basho_bench, "/Users/goncalotomas/git/basho_bench"},
-        {spam_dir, "/Users/goncalotomas/git/riak_test/search-corpus/spam.0"},
-        {platform, "osx-64"}
+        {rt_harness, rtdev}
     ],
     lists:map(fun({N, V}) ->
             application:set_env(riak_test, N, V)
