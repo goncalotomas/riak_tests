@@ -1,7 +1,8 @@
 # riak_test 2.0
 
 Riak Test has historically been the singular code repository which concerns testing multiple deployment features of Riak.
-Its purpose built test runner accumulated some technical debt and now presents a significant barrier of entry for new contributions.  
+Its purpose built test runner accumulated some technical debt and now presents a significant barrier of entry for new contributions. We propose to rework Riak Test by using mostly standard frameworks like Common Test to perform the tests. This implies an effort of converting the old test suites in a way that is compliant with Common Test's API, but also to provide very explicit failure context that was not available previously.
+
 This is a Google Summer of Code 2018 project for the BEAM Community. The mentors of this project are Gordon Guthrie, Bryan Hunt and Russell Brown.
 
 
