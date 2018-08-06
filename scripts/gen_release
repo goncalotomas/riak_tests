@@ -1,13 +1,22 @@
+#!/bin/bash
+
 echo "===> Running post_compile hook for generating Riak release"
-# TODO check if target files are already there and only generate release if there the files are NOT there
-# TARGET_DIR="priv/bin/$REBAR_PROFILE"
-# if [ -d "priv/bin/$REBAR_PROFILE" ]; then
-#   # Control will enter here if $DIRECTORY exists.
-#   echo "Release artefact directory already exists. Checking for binaries"
-#   if [ ! -f "$TARGET_DIR/" ]; then
-#     echo "File not found!"
-#   fi
-# fi
+
+# check if target files are already there and only generate release if there the files are NOT there
+if [ -z $REBAR_PROFILE ]; then
+    TARGET_DIR="priv/bin/default"
+else
+    TARGET_DIR="priv/bin/$REBAR_PROFILE"
+fi
+BIN_RIAK_ADMIN="$TARGET_DIR/riak-admin"
+BIN_RIAK_DEBUG="$TARGET_DIR/riak-debug"
+BIN_RIAK_SEARCH="$TARGET_DIR/search-cmd"
+if [ -f $BIN_RIAK_ADMIN ] && [ -f $BIN_RIAK_DEBUG ] && [ -f $BIN_RIAK_SEARCH ]; then
+  echo "===> Binary release artefacts found, skipping release generation."
+  exit 0
+fi
+
+# artefacts are not present in the target directory
 CWD=$(pwd)
 OLD_DEPS_DIR=$REBAR_DEPS_DIR
 OLD_BUILD_DIR=$REBAR_BUILD_DIR
@@ -43,10 +52,10 @@ if [ $? -eq 0 ]; then
     echo "Post compile hook: Copying artefacts to shared directory..."
     if [ -z $REBAR_PROFILE ]; then
         mkdir -p priv/bin/default
-        cp _build/default/lib/riak/rel/riak/bin/* priv/bin/default/
+        cp _build/default/lib/riak/rel/files/* priv/bin/default/
     else
         mkdir -p priv/bin/$REBAR_PROFILE
-        cp _build/$REBAR_PROFILE/lib/riak/rel/riak/bin/* priv/bin/$REBAR_PROFILE/
+        cp _build/$REBAR_PROFILE/lib/riak/rel/files/* priv/bin/$REBAR_PROFILE/
     fi
     echo "Post compile hook: Success!"
 fi
