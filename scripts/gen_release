@@ -50,12 +50,15 @@ if [ $? -eq 0 ]; then
     echo "Post compile hook: Done generating release."
     cd $CWD
     echo "Post compile hook: Copying artefacts to shared directory..."
+    # now there are several devrels created in a subfolder, each containing a copy of the riak executables
+    # we need to copy the executables elsewhere, so just copy from first devrel (dev1)
+    DEVREL=dev1
     if [ -z $REBAR_PROFILE ]; then
         mkdir -p priv/bin/default
-        cp _build/default/lib/riak/rel/files/* priv/bin/default/
+        cp _build/default/lib/riak/dev/$DEVREL/bin/* priv/bin/default/
     else
         mkdir -p priv/bin/$REBAR_PROFILE
-        cp _build/$REBAR_PROFILE/lib/riak/rel/files/* priv/bin/$REBAR_PROFILE/
+        cp _build/$REBAR_PROFILE/lib/riak/dev/$DEVREL/bin/* priv/bin/$REBAR_PROFILE/
     fi
     echo "Post compile hook: Success!"
 fi
