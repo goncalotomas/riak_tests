@@ -11,7 +11,7 @@ setup() ->
     %% TODO ensure that rt_config is able to read configuration below
     ListParams = [
         {rt_max_wait_time, 600000},
-        {rt_retry_delay, 1000},
+        {rt_retry_delay, 500},
         {rt_harness, rtdev}
     ],
     lists:map(fun({N, V}) ->
