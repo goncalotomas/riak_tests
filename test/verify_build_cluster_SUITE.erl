@@ -17,7 +17,7 @@
 -export([
     load_data_onto_node/1
     ,join_cluster/1
-    ,takedown_nodes/1
+    ,temporary_node_failure/1
 ]).
 
 suite() ->
@@ -73,7 +73,7 @@ all() ->
     [
         load_data_onto_node
         ,join_cluster
-        ,takedown_nodes
+        ,temporary_node_failure
     ].
 
 
@@ -98,7 +98,7 @@ join_cluster(Config) ->
     wait_and_validate(Nodes),
     ok.
 
-takedown_nodes(Config) ->
+temporary_node_failure(Config) ->
     [Node1, Node2, Node3, Node4] = Nodes = ?config(nodes, Config),
     lager:info("taking Node 1 down"),
     rt:stop(Node1),
