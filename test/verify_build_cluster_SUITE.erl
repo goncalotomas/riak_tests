@@ -21,28 +21,13 @@
 ]).
 
 suite() ->
-    [{timetrap, {minutes, 1}}].
+    [{timetrap, {minutes, 10}}].
 
 init_per_suite(Config) ->
-    application:set_env(riak_test, rt_harness, rtdev),
-    %% TODO remove hardcoded paths
-    %% TODO ensure that rt_config is able to read configuration below
-    ListParams = [
-        {rt_max_wait_time, 600000},
-        {rt_retry_delay, 1000},
-        {rt_harness, rtdev}
-    ],
-    lists:map(fun({N, V}) ->
-            application:set_env(riak_test, N, V)
-        end, ListParams),
-    application:set_env(riak_test, rtdev_path, [
-        {root,     "/Users/goncalotomas/git/riak_tests/_build/default/lib/riak"},
-       {current,  "/Users/goncalotomas/git/riak_tests/_build/default/lib/riak"},
-       {previous, "/Users/goncalotomas/git/riak_tests/_build/default/lib/riak"},
-       {legacy,   "/Users/goncalotomas/git/riak_tests/_build/default/lib/riak"}
-    ]),
+    rt_ct_util:start_node('verify_build_cluster@127.0.0.1'),
+    rt_ct_util:setup(),
     %% test requires allow_mult=false b/c of rt:systest_read
-    % rt:set_conf(all, [{"buckets.default.allow_mult", "false"}]),
+    rt:set_conf(all, [{"buckets.default.allow_mult", "false"}]),
     %% Deploy a set of new nodes
     lager:info("Deploying 4 nodes"),
     %% handoff_concurrency needs to be raised to make the leave operation faster.
