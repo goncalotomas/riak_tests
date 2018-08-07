@@ -15,6 +15,15 @@ Erlang 21+, so a bundled version of [rebar3][2] is included that works with Erla
 You can run tests by running `./rebar3 ct`. In this process a release of the currently selected version of Riak (by
 default the latest) will be generated, which is expected to take a while.
 
+### Using a single test suite
+
+If you're in a hurry or you just need to run a particular set of tests, you can take advantage of rebar3 itself to just
+run a single suite:
+
+```sh
+./rebar3 ct --suite test/verify_build_cluster_SUITE.erl
+```
+
 [1]: https://github.com/basho/riak_test
 [2]: http://www.rebar3.org/
 [bryan]: https://github.com/binarytemple
