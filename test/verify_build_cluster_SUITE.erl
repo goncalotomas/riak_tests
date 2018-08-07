@@ -57,9 +57,9 @@ end_per_suite(Config) ->
     rt:leave(Node3),
     ?assertEqual(ok, rt:wait_until_unpingable(Node3)),
 
-    % verify 4
+    % verify 4, stop it and then make sure it's down
     wait_and_validate([Node4]),
-
+    rt:stop(Node4),
     ?assertEqual(ok, rt:wait_until_unpingable(Node4)),
     ok.
 
