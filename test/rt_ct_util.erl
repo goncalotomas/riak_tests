@@ -1,5 +1,7 @@
 -module(rt_ct_util).
 
+-include("riak_tests.hrl").
+
 -export([start_node/1, setup/0]).
 
 start_node(Name) ->
@@ -7,6 +9,15 @@ start_node(Name) ->
     true = erlang:set_cookie(Name, riak).
 
 setup() ->
+    ensure_clean_devrel(),
+    configure_environment().
+
+ensure_clean_devrel() ->
+    % Result = os:cmd("source " ++ ?PRIV_DIR ++ "/clean_devrel riak"),
+    % lager:info("Running clean devrel on the riak dependency...~n~p~n", [Result]),
+    ok.
+
+configure_environment() ->
     application:set_env(riak_test, rt_harness, rtdev),
     %% TODO ensure that rt_config is able to read configuration below
     ListParams = [
