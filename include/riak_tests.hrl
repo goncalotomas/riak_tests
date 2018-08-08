@@ -1,0 +1,2 @@
+-define(APP, riak_tests).
+-define(PRIV_DIR, code:priv_dir(?APP)).
