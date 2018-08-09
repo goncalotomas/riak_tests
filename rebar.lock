@@ -188,7 +188,7 @@
   3},
  {<<"riak_test">>,
   {git,"https://github.com/goncalotomas/rt_lib",
-       {ref,"48e7f5187e4e9e7ab1eed1a6f283f369d24984f1"}},
+       {ref,"0f9e2209ba7aee1c8847150157653d00ee208e94"}},
   0},
  {<<"riakc">>,{pkg,<<"riakc">>,<<"2.5.3">>},1},
  {<<"riakhttpc">>,
