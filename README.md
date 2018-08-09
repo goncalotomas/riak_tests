@@ -31,6 +31,14 @@ is possible that the test step that takes the nodes down is skipped, leaving you
 Be sure to take extra care after getting a failing test suite and run `killall beam.smp` or similar so as to
 not propagate errors to other suites (because they will not be able to start up nodes with the same name).
 
+### Cleaning devrel manually
+If you are running a test suite at a time you may also find it useful to be able to clean the devrel inside your Riak dependency. To do so run the following from the project root:
+
+```sh
+./priv/clean_devrel <RIAK_DEP_NAME>
+```
+
+Where `<RIAK_DEP_NAME>` is the name under which the Riak dependency appears inside `_build/test/lib`. If you've not configured a different version of Riak, this should just be `riak`.
 
 
 [1]: https://github.com/basho/riak_test
