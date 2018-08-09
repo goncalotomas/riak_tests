@@ -37,6 +37,12 @@ echo "ERL = $ERL"
 echo "ERLC = $ERLC"
 echo "ERLANG_ARCH = $ERLANG_ARCH"
 echo "ERLANG_TARGET = $ERLANG_TARGET"
+echo "Post compile hook: Generating druuid artefacts..."
+cd $REBAR_DEPS_DIR/druuid
+if make ; then
+    echo "Post compile hook: druuid artefacts generated."
+fi
+cd -
 echo "Post compile hook: Changing directory into Riak dependency..."
 echo $REBAR_DEPS_DIR > $REBAR_BUILD_DIR/../../priv/.rebar_deps_dir
 cd $REBAR_DEPS_DIR/riak
