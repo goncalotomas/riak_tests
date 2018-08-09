@@ -24,6 +24,15 @@ run a single suite:
 ./rebar3 ct --suite test/verify_build_cluster_SUITE.erl
 ```
 
+### Failing test suites
+Each test suites makes sure to generate a new devrel to make sure it is using a clean and deterministic test
+environment. This is done in the `init_per_suite/1` function. If something goes wrong along the test suite, it
+is possible that the test step that takes the nodes down is skipped, leaving you with some undead Riak nodes.
+Be sure to take extra care after getting a failing test suite and run `killall beam.smp` or similar so as to
+not propagate errors to other suites (because they will not be able to start up nodes with the same name).
+
+
+
 [1]: https://github.com/basho/riak_test
 [2]: http://www.rebar3.org/
 [bryan]: https://github.com/binarytemple
