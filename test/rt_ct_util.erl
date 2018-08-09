@@ -4,7 +4,7 @@
 
 -export([start_node/1, setup/0]).
 
--define(RIAK_DEP_PATH, ?PRIV_DIR ++ "/../_build/default/lib/riak").
+-define(RIAK_DEP_PATH, ?DEPS_DIR ++ "/riak").
 
 start_node(Name) ->
     {ok, _} = net_kernel:start([Name]),
@@ -30,10 +30,12 @@ configure_environment() ->
     lists:map(fun({N, V}) ->
             application:set_env(riak_test, N, V)
         end, ListParams),
-    %% TODO remove hardcoded paths
+    io:format("Priv dir = ~p~n", [?PRIV_DIR]),
+    io:format("Deps dir = ~p~n", [?DEPS_DIR]),
+    io:format("Using ~p as the Riak dependency path~n", [?RIAK_DEP_PATH]),
     application:set_env(riak_test, rtdev_path, [
-        {root,     "/Users/goncalotomas/git/riak_tests/_build/default/lib/riak"},
-       {current,  "/Users/goncalotomas/git/riak_tests/_build/default/lib/riak"},
-       {previous, "/Users/goncalotomas/git/riak_tests/_build/default/lib/riak"},
-       {legacy,   "/Users/goncalotomas/git/riak_tests/_build/default/lib/riak"}
+        {root,     ?RIAK_DEP_PATH},
+        {current,  ?RIAK_DEP_PATH},
+        {previous, ?RIAK_DEP_PATH},
+        {legacy,   ?RIAK_DEP_PATH}
     ]).
