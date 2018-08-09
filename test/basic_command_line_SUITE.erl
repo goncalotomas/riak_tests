@@ -18,7 +18,7 @@
 -define(PING_FAILURE_OUTPUT, "Node did not respond to ping!").
 
 suite() ->
-    [{timetrap, {minutes, 5}}].
+    [{timetrap, {minutes, 10}}].
 
 init_per_suite(Config) ->
     rt_ct_util:start_node('basic_command_line@127.0.0.1'),
