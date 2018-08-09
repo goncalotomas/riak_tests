@@ -1,0 +1,7 @@
+#!/bin/bash
+RIAK_VERSION=$1
+REBAR_BUILD_DIR=$(cat .rebar_deps_dir)
+cd $REBAR_BUILD_DIR/$1
+
+make devclean && make devrel
+cd -

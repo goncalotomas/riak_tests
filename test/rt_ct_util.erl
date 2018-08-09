@@ -13,8 +13,8 @@ setup() ->
     configure_environment().
 
 ensure_clean_devrel() ->
-    % Result = os:cmd("source " ++ ?PRIV_DIR ++ "/clean_devrel riak"),
-    % lager:info("Running clean devrel on the riak dependency...~n~p~n", [Result]),
+    Result = os:cmd("cd " ++ ?PRIV_DIR ++ " && source ./clean_devrel riak && cd -"),
+    io:format("Running clean devrel on the riak dependency...~n~p~n", [Result]),
     ok.
 
 configure_environment() ->
