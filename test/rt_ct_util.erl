@@ -4,6 +4,8 @@
 
 -export([start_node/1, setup/0]).
 
+-define(RIAK_DEP_PATH, ?PRIV_DIR ++ "/../_build/default/lib/riak").
+
 start_node(Name) ->
     {ok, _} = net_kernel:start([Name]),
     true = erlang:set_cookie(Name, riak).
@@ -13,8 +15,8 @@ setup() ->
     configure_environment().
 
 ensure_clean_devrel() ->
-    Result = os:cmd("cd " ++ ?PRIV_DIR ++ " && source ./clean_devrel riak && cd -"),
-    io:format("Running clean devrel on the riak dependency...~n~p~n", [Result]),
+    lager:info("Running clean devrel on the riak dependency...~n"),
+    os:cmd("cd " ++ ?PRIV_DIR ++ " && source ./clean_devrel riak && cd -"),
     ok.
 
 configure_environment() ->
