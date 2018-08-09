@@ -16,3 +16,4 @@ _build
 *.iml
 rebar3.crashdump
 /priv/bin
+.rebar_deps_dir
