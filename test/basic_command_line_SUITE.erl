@@ -10,8 +10,8 @@
 ]).
 
 -export([
-    verify_node_up_behaviour/1,
-    stop_node/1
+    verify_node_up_behaviour/1
+    ,stop_node/1
     ,verify_node_down_behaviour/1
 ]).
 
