@@ -32,8 +32,7 @@ Be sure to take extra care after getting a failing test suite and run `killall b
 not propagate errors to other suites (because they will not be able to start up nodes with the same name).
 
 #### Known issues
-- `bucket_props_validation_SUITE` and `bucket_types_SUITE` have an issue with setting and getting bucket type properties via protocol buffers.
-- Intercepts are still not working and cannot be added just yet.
+- Intercepts are not working properly and there are no working suites that use them (for now).
 
 ### Cleaning devrel manually
 If you are running a test suite at a time you may also find it useful to be able to clean the devrel inside your Riak dependency. To do so run the following from the project root:
