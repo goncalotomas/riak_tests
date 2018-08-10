@@ -2,7 +2,7 @@
 -include_lib("common_test/include/ct.hrl").
 -include_lib("eunit/include/eunit.hrl").
 
--compile([{nowarn_unused_function, [mapred_modfun/3, mapred_modfun_type/3]}]).
+% -compile([{nowarn_unused_function, [mapred_modfun/3, mapred_modfun_type/3]}]).
 
 -export([
     suite/0,
@@ -19,6 +19,9 @@
     ,bucket_type_properties_test/1
     ,secondary_index_test/1
 ]).
+
+%% exports required for this particular test that are NOT test cases
+-export([mapred_modfun/3, mapred_modfun_type/3]).
 
 -define(PING_FAILURE_OUTPUT, "Node did not respond to ping!").
 
@@ -49,14 +52,11 @@ init_per_suite(Config) ->
                                                        {dvv_enabled, true}
                                                    ]}]}]),
     Node = hd(Nodes),
-    PB = rt:pbc(Node),
     ?assertEqual(ok, rt:wait_until_nodes_ready([Nodes])),
-    [{node, Node}, {nodes, Nodes}, {pb, PB} | Config].
+    [{node, Node}, {nodes, Nodes} | Config].
 
 end_per_suite(Config) ->
     Nodes = ?config(nodes, Config),
-    PB = ?config(pb, Config),
-    riakc_pb_socket:stop(PB),
     [rt:stop_and_wait(Node) || Node <- Nodes],
     net_kernel:stop(),
     ok.
@@ -73,7 +73,8 @@ all() ->
 
 default_bucket_type_test(Config) ->
     lager:info("default type get/put test"),
-    PB = ?config(pb, Config),
+    Node = ?config(node, Config),
+    PB = rt:pbc(Node),
     %% write explicitly to the default type
     riakc_pb_socket:put(PB, riakc_obj:new({<<"default">>, <<"bucket">>},
                                              <<"key">>, <<"value">>)),
@@ -147,13 +148,14 @@ default_bucket_type_test(Config) ->
     %% list buckets
     ?assertEqual({ok, []}, riakc_pb_socket:list_buckets(PB)),
     ?assertEqual({ok, []}, riakc_pb_socket:list_buckets(PB, <<"default">>)),
+    riakc_pb_socket:stop(PB),
     ok.
 
 custom_bucket_type_test(Config) ->
     lager:info("custom type get/put test"),
-    PB = ?config(pb, Config),
     Node = ?config(node, Config),
     Nodes = ?config(nodes, Config),
+    PB = rt:pbc(Node),
     Type = <<"mytype">>,
     TypeProps = [{n_val, 3}],
     lager:info("Create bucket type ~p, wait for propagation", [Type]),
@@ -182,13 +184,14 @@ custom_bucket_type_test(Config) ->
     %% list buckets
     ?assertEqual({ok, []}, riakc_pb_socket:list_buckets(PB)),
     ?assertEqual({ok, [<<"bucket">>]}, riakc_pb_socket:list_buckets(PB, Type)),
+    riakc_pb_socket:stop(PB),
     ok.
 
 utf8_test(Config) ->
     lager:info("UTF-8 type get/put test"),
-    PB = ?config(pb, Config),
     Node = ?config(node, Config),
     Nodes = ?config(nodes, Config),
+    PB = rt:pbc(Node),
     TypeProps = [{n_val, 3}],
     %% こんにちは - konnichiwa (Japanese)
     UnicodeType = unicode:characters_to_binary([12371,12435,12395,12385,12399], utf8),
@@ -215,11 +218,13 @@ utf8_test(Config) ->
     lager:info("custom type list_buckets test"),
     %% list buckets
     ?assertEqual({ok, [UnicodeBucket]}, riakc_pb_socket:list_buckets(PB, UnicodeType)),
+    riakc_pb_socket:stop(PB),
     ok.
 
 bucket_properties_test(Config) ->
     lager:info("bucket properties tests"),
-    PB = ?config(pb, Config),
+    Node = ?config(node, Config),
+    PB = rt:pbc(Node),
     Type = <<"mytype">>,
     %% こんにちは - konnichiwa (Japanese)
     UnicodeType = unicode:characters_to_binary([12371,12435,12395,12385,12399], utf8),
@@ -276,13 +281,14 @@ bucket_properties_test(Config) ->
     lager:info("GOT ERROR ~s", [NTSR]),
 
     ?assertMatch(<<"No bucket-type named 'nonexistent'", _/binary>>, NTSR),
+    riakc_pb_socket:stop(PB),
     ok.
 
 bucket_type_properties_test(Config) ->
     lager:info("bucket type properties test"),
-    PB = ?config(pb, Config),
     Node = ?config(node, Config),
     Nodes = ?config(nodes, Config),
+    PB = rt:pbc(Node),
     Type = <<"mytype">>,
     %% こんにちは - konnichiwa (Japanese)
     UnicodeType = unicode:characters_to_binary([12371,12435,12395,12385,12399], utf8),
@@ -351,16 +357,17 @@ bucket_type_properties_test(Config) ->
     {ok, BProps11} = riakc_pb_socket:get_bucket_type(PB, Type2),
 
     ?assertEqual(3, proplists:get_value(n_val, BProps11)),
+    riakc_pb_socket:stop(PB),
     ok.
 
 secondary_index_test(Config) ->
-    PB = ?config(pb, Config),
+    Node = ?config(node, Config),
     Nodes = ?config(nodes, Config),
+    PB = rt:pbc(Node),
     Type = <<"mytype">>,
-    RMD = riak_test_runner:metadata(),
-    HaveIndexes = case proplists:get_value(backend, RMD) of
+    HaveIndexes = case rpc:call(Node, app_helper, get_env, [riak_kv, storage_backend]) of
                       undefined -> false; %% default is da 'cask
-                      bitcask -> false;
+                      riak_kv_bitcask_backend -> false;
                       _ -> true
                   end,
     case HaveIndexes of
@@ -568,6 +575,7 @@ secondary_index_test(Config) ->
                                         {reduce, {jsfun,
                                                   <<"Riak.reduceSum">>},
                                                   undefined, true}])),
+    riakc_pb_socket:stop(PB),
     ok.
 
 accumulate(ReqID) ->
