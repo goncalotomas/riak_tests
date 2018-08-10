@@ -13,8 +13,6 @@
     verify_cuttlefish_params/1
 ]).
 
--define(PING_FAILURE_OUTPUT, "Node did not respond to ping!").
-
 suite() ->
     [{timetrap, {minutes, 10}}].
 
