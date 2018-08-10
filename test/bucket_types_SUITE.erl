@@ -29,7 +29,7 @@ suite() ->
     [{timetrap, {minutes, 10}}].
 
 init_per_suite(Config) ->
-    rt_ct_util:start_node('basic_command_line@127.0.0.1'),
+    rt_ct_util:start_node('bucket_types@127.0.0.1'),
     rt_ct_util:setup(),
     {ok, _} = application:ensure_all_started(inets),
     {ok, _} = application:ensure_all_started(crypto),

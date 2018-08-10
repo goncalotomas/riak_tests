@@ -29,7 +29,7 @@ suite() ->
     [{timetrap, {minutes, 10}}].
 
 init_per_suite(Config) ->
-    rt_ct_util:start_node('bucket_props_roundtrip@127.0.0.1'),
+    rt_ct_util:start_node('cluster_meta_basic@127.0.0.1'),
     rt_ct_util:setup(),
     Nodes = rt:build_cluster(5),
     [{nodes, Nodes} | Config].

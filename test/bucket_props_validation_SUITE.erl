@@ -20,7 +20,7 @@ suite() ->
     [{timetrap, {minutes, 10}}].
 
 init_per_suite(Config) ->
-    rt_ct_util:start_node('bucket_props_roundtrip@127.0.0.1'),
+    rt_ct_util:start_node('bucket_props_validation@127.0.0.1'),
     rt_ct_util:setup(),
     [Node] = rt:build_cluster(1),
     {ok, _} = application:ensure_all_started(inets),
