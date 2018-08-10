@@ -22,6 +22,7 @@ suite() ->
 init_per_suite(Config) ->
     rt_ct_util:start_node('bucket_props_roundtrip@127.0.0.1'),
     rt_ct_util:setup(),
+    [Node] = rt:build_cluster(1),
     {ok, _} = application:ensure_all_started(inets),
     {ok, _} = application:ensure_all_started(crypto),
     {ok, _} = application:ensure_all_started(ibrowse),
@@ -29,15 +30,10 @@ init_per_suite(Config) ->
     {ok, _} = application:ensure_all_started(riak_pb),
     {ok, _} = application:ensure_all_started(riakc),
     {ok, _} = application:ensure_all_started(riakhttpc),
-    [Node] = Nodes = rt:build_cluster(1),
-    ?assertEqual(ok, rt:wait_until_nodes_ready(Nodes)),
-    Connections = get_connections(Node),
     Buckets = {druuid:v4_str(), druuid:v4_str()},
-    [{node, Node}, {connections, Connections}, {buckets, Buckets} | Config].
+    [{node, Node}, {buckets, Buckets} | Config].
 
 end_per_suite(Config) ->
-    Connections = ?config(connections, Config),
-    close_connections(Connections),
     Node = ?config(node, Config),
     rt:stop_and_wait(Node),
     ok = application:stop(ibrowse),
@@ -55,18 +51,22 @@ all() ->
 
 verify_default_props(Config) ->
     %% Check we are starting in a default state
-    Connections = ?config(connections, Config),
+    Node = ?config(node, Config),
     Buckets = ?config(buckets, Config),
+    Connections = get_connections(Node),
     DefaultProps = default_props(),
     verify_props(Connections, Buckets, DefaultProps),
+    close_connections(Connections),
     ok.
 
 set_invalid_props(Config) ->
     %% Verify attempting to set invalid properties results in the expected errors
-    Connections = ?config(connections, Config),
+    Node = ?config(node, Config),
     Buckets = ?config(buckets, Config),
+    Connections = get_connections(Node),
     InvalidProps = invalid_props(),
     verify_props_errors(set_props(Connections, Buckets, InvalidProps)),
+    close_connections(Connections),
     ok.
 
 check_if_props_have_changed(Config) ->
@@ -74,13 +74,15 @@ check_if_props_have_changed(Config) ->
     verify_default_props(Config).
 
 set_valid_props(Config) ->
-    Connections = ?config(connections, Config),
+    Node = ?config(node, Config),
     Buckets = ?config(buckets, Config),
+    Connections = get_connections(Node),
     ValidProps = valid_props(),
     %% Set valid properties and verify they are present when
     %% retreiving the bucket properties
     ?assertEqual({ok, ok}, set_props(Connections, Buckets, ValidProps)),
     verify_props(Connections, Buckets, ValidProps),
+    close_connections(Connections),
     ok.
 
 verify_props(Connections, Buckets, Expected) ->
@@ -194,13 +196,11 @@ close_connections({_Http, PBC}) ->
     riakc_pb_socket:stop(PBC).
 
 get_props({Http, PBC}, {HttpBucket, PbcBucket}) ->
-    io:format("socket is_pid (get) = ~p~n", [is_pid(PBC)]),
     {ok, PbcProps} = riakc_pb_socket:get_bucket(PBC, PbcBucket),
     {ok, HttpProps} = rhc:get_bucket(Http, HttpBucket),
     {HttpProps, PbcProps}.
 
 set_props({Http, PBC}, {HttpBucket, PbcBucket}, Props) ->
-    io:format("socket is_pid (set) = ~p~n", [is_pid(PBC)]),
     HttpRes = rhc:set_bucket(Http, HttpBucket, Props),
     PbcRes = try riakc_pb_socket:set_bucket(PBC, PbcBucket, Props) of
                  NormalRes ->
