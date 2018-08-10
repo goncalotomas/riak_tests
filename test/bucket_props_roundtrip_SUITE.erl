@@ -89,6 +89,7 @@ check_prop_set_and_get(Node, Prop, One, Two) ->
     pbc_set_property(PBC, Prop, Two),
     lager:info("HTTP get should = ~p", [Two]),
     ?assertEqual(Two, http_get_property(HTTP, Prop)),
+    riakc_pb_socket:stop(PBC),
     ok.
 
 
