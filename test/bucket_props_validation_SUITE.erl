@@ -22,7 +22,7 @@ suite() ->
 init_per_suite(Config) ->
     rt_ct_util:start_node('bucket_props_roundtrip@127.0.0.1'),
     rt_ct_util:setup(),
-    application:load(druuid),
+    {ok, _} = application:ensure_all_started(inets),
     {ok, _} = application:ensure_all_started(crypto),
     {ok, _} = application:ensure_all_started(ibrowse),
     {ok, _} = application:ensure_all_started(druuid),
@@ -194,11 +194,13 @@ close_connections({_Http, PBC}) ->
     riakc_pb_socket:stop(PBC).
 
 get_props({Http, PBC}, {HttpBucket, PbcBucket}) ->
+    io:format("socket is_pid (get) = ~p~n", [is_pid(PBC)]),
     {ok, PbcProps} = riakc_pb_socket:get_bucket(PBC, PbcBucket),
     {ok, HttpProps} = rhc:get_bucket(Http, HttpBucket),
     {HttpProps, PbcProps}.
 
 set_props({Http, PBC}, {HttpBucket, PbcBucket}, Props) ->
+    io:format("socket is_pid (set) = ~p~n", [is_pid(PBC)]),
     HttpRes = rhc:set_bucket(Http, HttpBucket, Props),
     PbcRes = try riakc_pb_socket:set_bucket(PBC, PbcBucket, Props) of
                  NormalRes ->
