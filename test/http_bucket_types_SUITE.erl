@@ -329,11 +329,7 @@ secondary_indexes(Config) ->
     Nodes = ?config(nodes, Config),
     Node = ?config(node, Config),
     RHC = rt:httpc(Node),
-    HaveIndexes = case rpc:call(Node, app_helper, get_env, [riak_kv, storage_backend]) of
-                      undefined -> false; %% default is da 'cask
-                      riak_kv_bitcask_backend -> false;
-                      _ -> true
-                  end,
+    HaveIndexes = rt_ct_util:have_indexes(Node),
 
     %% 2i tests
 

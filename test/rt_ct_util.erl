@@ -2,7 +2,7 @@
 
 -include("riak_tests.hrl").
 
--export([start_node/1, setup/0]).
+-export([start_node/1, setup/0, have_indexes/1]).
 
 -define(RIAK_DEP_PATH, ?DEPS_DIR ++ "/riak").
 
@@ -39,3 +39,10 @@ configure_environment() ->
         {previous, ?RIAK_DEP_PATH},
         {legacy,   ?RIAK_DEP_PATH}
     ]).
+
+have_indexes(Node) ->
+    case rpc:call(Node, app_helper, get_env, [riak_kv, storage_backend]) of
+        undefined -> false; %% default is da 'cask
+        riak_kv_bitcask_backend -> false;
+        _ -> true
+    end.

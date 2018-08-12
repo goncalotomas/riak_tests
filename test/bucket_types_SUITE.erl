@@ -361,11 +361,7 @@ secondary_index_test(Config) ->
     Nodes = ?config(nodes, Config),
     PB = rt:pbc(Node),
     Type = <<"mytype">>,
-    HaveIndexes = case rpc:call(Node, app_helper, get_env, [riak_kv, storage_backend]) of
-                      undefined -> false; %% default is da 'cask
-                      riak_kv_bitcask_backend -> false;
-                      _ -> true
-                  end,
+    HaveIndexes = rt_ct_util:have_indexes(Node),
     case HaveIndexes of
         false -> ok;
         true ->
