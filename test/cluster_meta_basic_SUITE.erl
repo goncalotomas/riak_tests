@@ -10,9 +10,9 @@
 ]).
 
 -export([
-    test_fold_full_prefix/1
-    ,test_metadata_conflicts/1
-    ,test_writes_after_partial_cluster_failure/1
+    fold_full_prefix/1
+    ,metadata_conflicts/1
+    ,writes_after_partial_cluster_failure/1
 ]).
 
 %% exports required for this particular test that are NOT test cases
@@ -42,14 +42,14 @@ end_per_suite(Config) ->
 
 all() ->
     [
-        test_fold_full_prefix
-        ,test_metadata_conflicts
-        ,test_writes_after_partial_cluster_failure
+        fold_full_prefix
+        ,metadata_conflicts
+        ,writes_after_partial_cluster_failure
     ].
 
 %% 1. write several keys to a prefix, fold over them accumulating a list
 %% 2. ensure list of keys and values match those written to prefix
-test_fold_full_prefix(Config) ->
+fold_full_prefix(Config) ->
     [N1 | _] = Nodes = ?config(nodes, Config),
     rt:load_modules_on_nodes([?MODULE], Nodes),
     lager:info("testing prefix (~p) fold on ~p", [?PREFIX2, N1]),
@@ -62,7 +62,7 @@ test_fold_full_prefix(Config) ->
     ?assertEqual(KeysAndVals, SortedRes),
     ok.
 
-test_metadata_conflicts(Config) ->
+metadata_conflicts(Config) ->
     [N1, N2 | _] = Nodes = ?config(nodes, Config),
     rt:load_modules_on_nodes([?MODULE], Nodes),
     lager:info("testing conflicting writes to a key"),
@@ -98,7 +98,7 @@ test_metadata_conflicts(Config) ->
 %% 3. perform an update of the key from the same node and wait until it reaches all alive nodes
 %% 4. bring up stopped nodes and ensure that either lazily queued messages or anti-entropy repair
 %%    propogates key to all nodes in cluster
-test_writes_after_partial_cluster_failure(Config) ->
+writes_after_partial_cluster_failure(Config) ->
     [N1 | _] = Nodes = ?config(nodes, Config),
     lager:info("testing writes after partial cluster failure"),
     metadata_put(N1, ?PREFIX1, ?KEY1, ?VAL1),
