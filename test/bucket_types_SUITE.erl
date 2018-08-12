@@ -21,8 +21,6 @@
 %% exports required for this particular test that are NOT test cases
 -export([mapred_modfun/3, mapred_modfun_type/3]).
 
--define(PING_FAILURE_OUTPUT, "Node did not respond to ping!").
-
 suite() ->
     [{timetrap, {minutes, 10}}].
 
