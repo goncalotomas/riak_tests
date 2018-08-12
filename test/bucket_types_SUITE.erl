@@ -2,8 +2,6 @@
 -include_lib("common_test/include/ct.hrl").
 -include_lib("eunit/include/eunit.hrl").
 
-% -compile([{nowarn_unused_function, [mapred_modfun/3, mapred_modfun_type/3]}]).
-
 -export([
     suite/0,
     all/0,
