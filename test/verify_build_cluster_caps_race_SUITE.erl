@@ -15,12 +15,13 @@
 ]).
 
 suite() ->
-    [{timetrap, {minutes, 5}}].
+    [{timetrap, {minutes, 10}}].
 
 init_per_suite(Config) ->
     rt_ct_util:start_node('verify_build_cluster_caps_race@127.0.0.1'),
     rt_ct_util:setup(),
     Nodes = rt:deploy_nodes(2),
+    rt:load_modules_on_nodes([intercept, init_intercepts], Nodes),
     [{nodes, Nodes} | Config].
 
 end_per_suite(Config) ->
