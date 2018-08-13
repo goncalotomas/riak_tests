@@ -19,7 +19,7 @@ suite() ->
     [{timetrap, {minutes, 10}}].
 
 init_per_suite(Config) ->
-    rt_ct_util:start_node('bucket_props_roundtrip@127.0.0.1'),
+    rt_ct_util:start_node('cluster_meta_rmr@127.0.0.1'),
     rt_ct_util:setup(),
     rt:set_conf(all, [{"ring_size", "128"}]),
     Seed = erlang:now(),
@@ -77,6 +77,7 @@ run(NumNodes, NumRounds, StableRounds) ->
 
 setup_nodes(NumNodes) ->
     Nodes = rt:build_cluster(NumNodes),
+    rt:load_modules_on_nodes([intercept, riak_core_broadcast_intercepts], Nodes),
     [begin
          ok = rpc:call(Node, application, set_env, [riak_core, broadcast_exchange_timer, 4294967295]),
          ok = rpc:call(Node, application, set_env, [riak_core, gossip_limit, {10000000, 4294967295}]),
