@@ -25,7 +25,8 @@ configure_environment() ->
     ListParams = [
         {rt_max_wait_time, 600000},
         {rt_retry_delay, 500},
-        {rt_harness, rtdev}
+        {rt_harness, rtdev},
+        {rt_scratch_dir, ?RIAK_DEP_PATH}
     ],
     lists:map(fun({N, V}) ->
             application:set_env(riak_test, N, V)
